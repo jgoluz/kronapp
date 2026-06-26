@@ -126,7 +126,7 @@ export const en = {
     defaultUnit: 'Default unit',
     grams: 'Grams (g)',
     ml: 'Milliliters (ml)',
-    about: 'About Kron',
+    about: 'About Koffie',
     version: 'Version',
     credits: 'Made with love for baristas.',
     clearData: 'Clear data',

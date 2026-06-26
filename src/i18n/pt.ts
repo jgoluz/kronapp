@@ -133,7 +133,7 @@ export const pt = {
     defaultUnit: 'Unidade padrão',
     grams: 'Gramas (g)',
     ml: 'Mililitros (ml)',
-    about: 'Sobre o Kron',
+    about: 'Sobre o Koffie',
     version: 'Versão',
     credits: 'Feito com carinho para baristas.',
     clearData: 'Limpar dados',

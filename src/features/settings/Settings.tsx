@@ -148,7 +148,7 @@ export function Settings() {
                   lineHeight: 1,
                   letterSpacing: '0.04em',
                 }}>
-                  KRON
+                  KOFFIE
                 </p>
                 <p style={{ fontSize: 11, color: 'var(--kron-amber)', opacity: 0.55 }}>
                   {t.settings.version} 1.0.0 · PWA Offline

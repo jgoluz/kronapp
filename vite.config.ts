@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
-        name: 'Kron — Barista Pro',
-        short_name: 'Kron',
+        name: 'Koffie — Barista Pro',
+        short_name: 'Koffie',
         description: 'PWA offline-first para baristas profissionais',
         theme_color: '#0D0B08',
         background_color: '#0D0B08',
