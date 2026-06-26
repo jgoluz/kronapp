@@ -15,7 +15,9 @@
       "Bash(npx playwright@1.61.1 screenshot --browser chromium --viewport-size \"375,812\" --wait-for-selector \"div\" http://localhost:5173/settings settings.png)",
       "Bash(npx playwright@1.61.1 screenshot --browser chromium --viewport-size \"375,812\" --wait-for-selector \"div\" http://localhost:5173/recipes/new newrecipe.png)",
       "Bash(pkill -f \"vite\")",
-      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Windows11\\\\kron-app\\\\src\\\\landing\\\\index.html\"\\).Count; \\(Get-Item \"C:\\\\Users\\\\Windows11\\\\kron-app\\\\src\\\\landing\\\\index.html\"\\).Length / 1KB)"
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Windows11\\\\kron-app\\\\src\\\\landing\\\\index.html\"\\).Count; \\(Get-Item \"C:\\\\Users\\\\Windows11\\\\kron-app\\\\src\\\\landing\\\\index.html\"\\).Length / 1KB)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(git *)"
     ]
   }
 }
