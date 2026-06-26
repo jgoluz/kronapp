@@ -9,13 +9,13 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*.png'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons/*.png', 'icons/*.svg'],
       manifest: {
         name: 'Koffie — Barista Pro',
         short_name: 'Koffie',
         description: 'PWA offline-first para baristas profissionais',
-        theme_color: '#0D0B08',
-        background_color: '#0D0B08',
+        theme_color: '#130F0A',
+        background_color: '#130F0A',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
