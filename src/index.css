@@ -8,6 +8,7 @@
   --kron-amber: #A06840;
   --kron-cream: #F2E8D9;
   --kron-white: #FDFAF5;
+  --font-title: 'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif;
   --font-main: 'Barlow Condensed', system-ui, sans-serif;
 }
 
@@ -35,8 +36,6 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  max-width: 480px;
-  margin: 0 auto;
   position: relative;
 }
 

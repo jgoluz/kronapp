@@ -7,7 +7,6 @@ import { getTranslations } from '../../i18n'
 import { METHODS } from '../../data/seed/methods'
 import { BREW_PROFILES } from '../../data/seed/profiles'
 import { PageHeader } from '../../shared/components/PageHeader'
-import { Badge } from '../../shared/components/Badge'
 import { Button } from '../../shared/components/Button'
 import { Modal } from '../../shared/components/Modal'
 
@@ -37,7 +36,6 @@ export function Recipes() {
     const method = METHODS.find(m => m.id === recipe.method_id)
     const profile = BREW_PROFILES.find(p => p.id === recipe.profile_id)
     if (!method || !profile) return
-
     setMethod(method.id)
     setProfile(profile)
     if (recipe.is_custom_ratio) setCustomRatio(recipe.ratio)
@@ -55,12 +53,37 @@ export function Recipes() {
   const usedMethods = [...new Set(recipes.map(r => r.method_id))]
 
   return (
-    <div className="flex flex-col h-full" style={{ background: 'var(--kron-cream)' }}>
-      <PageHeader title={t.recipes.title} dark={false} />
+    <div className="flex flex-col h-full" style={{ background: 'var(--kron-black)' }}>
+      <PageHeader
+        title={t.recipes.title}
+        right={
+          <button
+            onClick={() => navigate('/recipes/new')}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl active:scale-95 transition-transform"
+            style={{ background: 'var(--kron-amber)', border: 'none', cursor: 'pointer' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="var(--kron-black)" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            <span style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: 15,
+              letterSpacing: '0.05em',
+              color: 'var(--kron-black)',
+            }}>
+              {t.recipes.newRecipe}
+            </span>
+          </button>
+        }
+      />
 
-      {/* Filter */}
+      {/* Method filter */}
       {usedMethods.length > 1 && (
-        <div className="px-4 pb-3 flex gap-2 overflow-x-auto" style={{ borderBottom: '1px solid rgba(122,79,46,0.1)' }}>
+        <div
+          className="flex gap-2 px-4 py-3 overflow-x-auto"
+          style={{ borderBottom: '1px solid rgba(160,104,64,0.12)', scrollbarWidth: 'none' }}
+        >
           <FilterChip
             label={t.recipes.allMethods}
             active={filterMethod === 'all'}
@@ -82,12 +105,28 @@ export function Recipes() {
 
       <div className="page-scroll safe-bottom px-4 pt-4">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <span className="text-4xl">☕</span>
-            <p className="text-base font-semibold" style={{ color: 'var(--kron-primary)' }}>{t.recipes.noRecipes}</p>
-            <p className="text-sm" style={{ color: 'var(--kron-primary)', opacity: 0.6 }}>{t.recipes.startBrewing}</p>
-            <Button variant="primary" size="md" onClick={() => navigate('/brew')} className="mt-2">
-              Preparar Agora
+          <div className="flex flex-col items-center justify-center py-16 gap-4">
+            <div style={{ width: 48, height: 48, opacity: 0.3 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--kron-amber)" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+                <path d="M9 12h6M9 16h4" />
+              </svg>
+            </div>
+            <p style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: 20,
+              color: 'var(--kron-cream)',
+              opacity: 0.6,
+              letterSpacing: '0.04em',
+            }}>
+              {t.recipes.noRecipes}
+            </p>
+            <p style={{ fontSize: 13, color: 'var(--kron-amber)', opacity: 0.5 }}>
+              {t.recipes.startBrewing}
+            </p>
+            <Button variant="primary" size="md" onClick={() => navigate('/brew')} className="mt-1">
+              {lang === 'pt' ? 'Preparar Agora' : lang === 'es' ? 'Preparar Ahora' : 'Brew Now'}
             </Button>
           </div>
         ) : (
@@ -97,6 +136,7 @@ export function Recipes() {
                 key={recipe.id}
                 recipe={recipe}
                 t={t}
+                lang={lang}
                 expanded={expandedId === recipe.id}
                 onToggle={() => setExpandedId(expandedId === recipe.id ? null : recipe.id!)}
                 onBrewAgain={() => handleBrewAgain(recipe)}
@@ -125,8 +165,10 @@ export function Recipes() {
   )
 }
 
-function RecipeCard({ recipe, t, expanded, onToggle, onBrewAgain, onDelete }: {
-  recipe: SavedRecipe; t: any; expanded: boolean
+function RecipeCard({
+  recipe, t, lang, expanded, onToggle, onBrewAgain, onDelete,
+}: {
+  recipe: SavedRecipe; t: any; lang: string; expanded: boolean
   onToggle: () => void; onBrewAgain: () => void; onDelete: () => void
 }) {
   const method = METHODS.find(m => m.id === recipe.method_id)
@@ -135,60 +177,97 @@ function RecipeCard({ recipe, t, expanded, onToggle, onBrewAgain, onDelete }: {
   const timeStr = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid rgba(122,79,46,0.12)', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+    <div style={{
+      borderRadius: 18,
+      overflow: 'hidden',
+      background: 'var(--kron-surface)',
+      border: '1px solid rgba(160,104,64,0.15)',
+    }}>
       <button className="w-full flex items-start gap-3 p-4 text-left" onClick={onToggle}>
-        <div className="flex-1 min-w-0">
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="text-lg font-bold uppercase tracking-wide"
-              style={{ color: 'var(--kron-black)', fontFamily: 'var(--font-main)' }}>
+            <span style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: 20,
+              color: 'var(--kron-cream)',
+              letterSpacing: '0.02em',
+              lineHeight: 1.1,
+            }}>
               {method ? (t.methods[recipe.method_id as keyof typeof t.methods] ?? method.name) : recipe.method_name}
             </span>
-            <span className="text-sm font-medium" style={{ color: 'var(--kron-primary)' }}>
+            <span style={{ fontSize: 13, color: 'var(--kron-amber)', opacity: 0.75 }}>
               — {t.profiles[recipe.profile_name as keyof typeof t.profiles] ?? recipe.profile_name}
             </span>
-            {recipe.is_custom_ratio && <Badge variant="custom">{t.brew.custom}</Badge>}
+            {recipe.is_custom_ratio && (
+              <span style={{
+                fontSize: 10,
+                fontFamily: 'var(--font-main)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                padding: '2px 6px',
+                borderRadius: 6,
+                background: 'rgba(160,104,64,0.15)',
+                color: 'var(--kron-amber)',
+              }}>
+                {t.brew.custom}
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--kron-primary)', opacity: 0.6 }}>
+          <div className="flex items-center gap-3" style={{ fontSize: 11, color: 'var(--kron-amber)', opacity: 0.55 }}>
             <span>{dateStr} {t.recipes.at} {timeStr}</span>
             <span>·</span>
             <span>1:{recipe.ratio} · {recipe.coffee_g}g / {recipe.water_ml}ml</span>
           </div>
           {recipe.note && (
-            <p className="text-sm mt-1.5 italic" style={{ color: 'var(--kron-primary)', opacity: 0.7 }}>
+            <p style={{
+              fontSize: 12,
+              marginTop: 6,
+              fontStyle: 'italic',
+              color: 'var(--kron-cream)',
+              opacity: 0.5,
+            }}>
               "{recipe.note}"
             </p>
           )}
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="var(--kron-primary)" strokeWidth="2" strokeLinecap="round"
+          stroke="var(--kron-amber)" strokeWidth="2" strokeLinecap="round"
           style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s', marginTop: 4, opacity: 0.5, flexShrink: 0 }}>
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: '1px solid rgba(122,79,46,0.08)' }}>
-          {/* Params grid */}
+        <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: '1px solid rgba(160,104,64,0.1)' }}>
           <div className="grid grid-cols-3 gap-2 pt-3">
             <MiniParam label={t.brew.temperature} value={recipe.temp ? `${recipe.temp}°C` : 'Frio'} />
             <MiniParam label={t.brew.grind} value={t.grind[recipe.grind as keyof typeof t.grind] ?? recipe.grind} />
             <MiniParam label={t.brew.ratio} value={`1:${recipe.ratio}`} />
           </div>
 
-          {/* Actions */}
           <div className="flex gap-2 mt-1">
-            <Button
-              variant="primary" size="sm" fullWidth onClick={onBrewAgain}
-              style={{ fontSize: 13 }}
+            <button
+              onClick={onBrewAgain}
+              className="flex-1 py-2.5 rounded-xl active:scale-95 transition-transform"
+              style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: 16,
+                letterSpacing: '0.06em',
+                background: 'var(--kron-amber)',
+                color: 'var(--kron-black)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
             >
               {t.recipes.brewAgain}
-            </Button>
+            </button>
             <button
               onClick={onDelete}
               className="px-3 py-2 rounded-xl active:scale-95 transition-transform"
-              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer' }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(239,68,68)" strokeWidth="2" strokeLinecap="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(239,68,68)" strokeWidth="2" strokeLinecap="round">
                 <polyline points="3 6 5 6 21 6" />
                 <path d="M19 6l-1 14H6L5 6" />
                 <path d="M10 11v6M14 11v6M9 6V4h6v2" />
@@ -205,12 +284,21 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
   return (
     <button
       onClick={onClick}
-      className="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest whitespace-nowrap flex-shrink-0 active:scale-95 transition-transform"
+      className="active:scale-95 transition-transform"
       style={{
+        padding: '6px 14px',
+        borderRadius: 20,
         fontFamily: 'var(--font-main)',
-        background: active ? 'var(--kron-primary)' : 'rgba(122,79,46,0.08)',
-        color: active ? 'var(--kron-white)' : 'var(--kron-primary)',
-        border: `1px solid ${active ? 'var(--kron-primary)' : 'rgba(122,79,46,0.2)'}`,
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
+        background: active ? 'var(--kron-amber)' : 'rgba(160,104,64,0.08)',
+        color: active ? 'var(--kron-black)' : 'var(--kron-amber)',
+        border: `1px solid ${active ? 'var(--kron-amber)' : 'rgba(160,104,64,0.2)'}`,
+        cursor: 'pointer',
       }}
     >
       {label}
@@ -220,9 +308,13 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 
 function MiniParam({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center py-2 rounded-xl" style={{ background: 'rgba(122,79,46,0.06)' }}>
-      <span className="text-[9px] uppercase tracking-widest" style={{ color: 'var(--kron-amber)' }}>{label}</span>
-      <span className="text-sm font-bold mt-0.5" style={{ color: 'var(--kron-primary)', fontFamily: 'var(--font-main)' }}>{value}</span>
+    <div className="flex flex-col items-center py-2 rounded-xl" style={{ background: 'rgba(160,104,64,0.07)' }}>
+      <span style={{ fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--kron-amber)', opacity: 0.7 }}>
+        {label}
+      </span>
+      <span style={{ fontFamily: 'var(--font-title)', fontSize: 16, marginTop: 2, color: 'var(--kron-cream)' }}>
+        {value}
+      </span>
     </div>
   )
 }

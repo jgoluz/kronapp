@@ -41,8 +41,8 @@ export function PageHeader({ title, subtitle, dark = true, onBack, right }: Page
       )}
       <div className="flex-1">
         <h1
-          className="text-2xl font-bold uppercase tracking-widest leading-none"
-          style={{ color: dark ? 'var(--kron-white)' : 'var(--kron-black)', fontFamily: 'var(--font-main)' }}
+          className="text-2xl font-bold uppercase leading-none"
+          style={{ color: dark ? 'var(--kron-white)' : 'var(--kron-black)', fontFamily: 'var(--font-title)', letterSpacing: '0.04em' }}
         >
           {title}
         </h1>

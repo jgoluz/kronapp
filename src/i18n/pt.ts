@@ -26,6 +26,8 @@ export const pt = {
     source: 'Fonte',
     params: 'Parâmetros',
     adjust: 'Ajustar Ratio',
+    lastBrew: 'ÚLTIMO PREPARO',
+    repeat: 'REPETIR',
   },
   // Timer
   timer: {
@@ -96,6 +98,8 @@ export const pt = {
     cancel: 'Cancelar',
     confirm: 'Confirmar',
     at: 'às',
+    newRecipe: 'Nova Receita',
+    saveAndBrew: 'Salvar e Preparar',
   },
   // Settings
   settings: {

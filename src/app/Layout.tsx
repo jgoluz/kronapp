@@ -8,7 +8,7 @@ export function Layout() {
   const hideNav = HIDE_NAV.some(p => location.pathname.startsWith(p))
 
   return (
-    <div className="flex flex-col" style={{ height: '100dvh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+    <div className="flex flex-col" style={{ height: '100dvh', position: 'relative' }}>
       <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <Outlet />
       </main>

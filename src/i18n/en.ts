@@ -24,6 +24,8 @@ export const en = {
     source: 'Source',
     params: 'Parameters',
     adjust: 'Adjust Ratio',
+    lastBrew: 'LAST BREW',
+    repeat: 'REPEAT',
   },
   timer: {
     title: 'Timer',
@@ -91,6 +93,8 @@ export const en = {
     cancel: 'Cancel',
     confirm: 'Confirm',
     at: 'at',
+    newRecipe: 'New Recipe',
+    saveAndBrew: 'Save & Brew',
   },
   settings: {
     title: 'Settings',

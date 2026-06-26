@@ -6,6 +6,7 @@ import { Calculator } from '../features/brew/Calculator'
 import { Timer } from '../features/timer/Timer'
 import { Diagnosis } from '../features/diagnosis/Diagnosis'
 import { Recipes } from '../features/recipes/Recipes'
+import { NewRecipe } from '../features/recipes/NewRecipe'
 import { Settings } from '../features/settings/Settings'
 
 export const router = createBrowserRouter([
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: 'timer', element: <Timer /> },
       { path: 'diagnosis', element: <Diagnosis /> },
       { path: 'recipes', element: <Recipes /> },
+      { path: 'recipes/new', element: <NewRecipe /> },
       { path: 'settings', element: <Settings /> },
     ],
   },
