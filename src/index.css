@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --kron-black: #0D0B08;
+  --kron-surface: #130F0A;
+  --kron-deep: #4A3020;
+  --kron-primary: #7A4F2E;
+  --kron-amber: #A06840;
+  --kron-cream: #F2E8D9;
+  --kron-white: #FDFAF5;
+  --font-main: 'Barlow Condensed', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--kron-black);
+  color: var(--kron-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Scrollable page area */
+.page-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.page-scroll::-webkit-scrollbar { display: none; }
+
+/* Safe area for bottom nav */
+.safe-bottom {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
