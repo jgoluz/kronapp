@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Koffie — Assistente de Extração Profissional</title>
+  <meta name="description" content="Transforma objetivos sensoriais em extrações precisas e reproduzíveis. Gratuito, 100% offline, sem cadastro." />
+  <meta property="og:title" content="Koffie — Assistente de Extração Profissional" />
+  <meta property="og:description" content="Timer guiado, diagnóstico de extração e perfis sensoriais para baristas." />
+  <meta name="theme-color" content="#0D0B08" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0D0B08;
+      --surface: #130F0A;
+      --deep:    #4A3020;
+      --primary: #7A4F2E;
+      --amber:   #A06840;
+      --cream:   #F2E8D9;
+      --cream-dim: rgba(242, 232, 217, 0.08);
+      --amber-dim: rgba(160, 104, 64, 0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--black);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6, .condensed {
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── FADE-IN ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ── SHARED ── */
+    section { padding: 96px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .tag {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid var(--amber);
+      border-radius: 2px;
+      padding: 4px 10px;
+      margin-bottom: 24px;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 1 — HERO (dark)
+    ────────────────────────────────────────── */
+    #hero {
+      background: var(--black);
+      padding-top: 0;
+      padding-bottom: 96px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px;
+      border-bottom: 1px solid rgba(160,104,64,0.12);
+      position: sticky;
+      top: 0;
+      background: rgba(13,11,8,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--cream);
+    }
+    .nav-logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+    }
+    .nav-link {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      color: var(--amber);
+      border: 1px solid var(--amber);
+      padding: 8px 16px;
+      border-radius: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover { background: var(--amber); color: var(--black); }
+
+    /* HERO BODY */
+    .hero-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 64px 24px 80px;
+    }
+    .hero-logo-wrap { margin-bottom: 32px; }
+    .hero-tag { margin-bottom: 20px; }
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(52px, 9vw, 110px);
+      line-height: 0.92;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+    }
+    .hero-title .amber { color: var(--amber); }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 400;
+      color: rgba(242,232,217,0.6);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      background: var(--amber);
+      color: var(--black);
+      padding: 18px 40px;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+      margin-bottom: 36px;
+    }
+    .btn-primary:hover { background: #B87840; transform: translateY(-2px); }
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(242,232,217,0.45);
+      border: 1px solid rgba(242,232,217,0.12);
+      padding: 5px 10px;
+      border-radius: 2px;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 2 — PROBLEMA VS SOLUÇÃO (light)
+    ────────────────────────────────────────── */
+    #problema {
+      background: var(--cream);
+      color: var(--black);
+    }
+    #problema .tag { border-color: var(--primary); color: var(--primary); }
+    .problema-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(36px, 5vw, 62px);
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: 56px;
+      max-width: 640px;
+    }
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 64px;
+    }
+    @media (max-width: 720px) { .vs-grid { grid-template-columns: 1fr; } }
+
+    .vs-col { padding: 32px; }
+    .vs-col-bad  { background: #fff; }
+    .vs-col-good { background: var(--black); color: var(--cream); }
+
+    .vs-col-header {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid;
+    }
+    .vs-col-bad .vs-col-header  { color: #C0392B; border-color: #C0392B; }
+    .vs-col-good .vs-col-header { color: var(--amber); border-color: var(--amber); }
+
+    .vs-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+    .vs-item:last-child { margin-bottom: 0; }
+    .vs-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .vs-item-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .vs-item-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0.65;
+    }
+    .vs-col-good .vs-item-title { color: var(--amber); }
+    .vs-col-good .vs-item-desc  { color: rgba(242,232,217,0.6); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--black);
+      color: var(--cream);
+      padding: 28px 24px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 52px;
+      line-height: 1;
+      color: var(--amber);
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 3 — SCREENSHOTS (dark)
+    ────────────────────────────────────────── */
+    #screenshots { background: var(--surface); }
+    .screens-header { text-align: center; margin-bottom: 64px; }
+    .screens-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(34px, 5vw, 60px);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .phones-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 780px) {
+      .phones-row { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+    }
+    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+    /* CSS Phone Mockup */
+    .phone {
+      width: 220px;
+      height: 420px;
+      background: #1A1410;
+      border-radius: 32px;
+      border: 2px solid rgba(160,104,64,0.3);
+      padding: 16px 12px;
+      position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .phone::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 5px;
+      background: rgba(160,104,64,0.3);
+      border-radius: 3px;
+      margin: 0 auto 14px;
+    }
+    .phone-screen {
+      background: var(--black);
+      border-radius: 18px;
+      height: calc(100% - 36px);
+      overflow: hidden;
+      padding: 16px 12px;
+      position: relative;
+    }
+    /* Phone 1 — método select */
+    .phone-1-header {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+    .phone-1-q {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 15px;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .method-chip {
+      background: var(--surface);
+      border: 1px solid rgba(160,104,64,0.2);
+      border-radius: 6px;
+      padding: 8px 6px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: rgba(242,232,217,0.7);
+      text-transform: uppercase;
+    }
+    .method-chip.active {
+      background: var(--amber);
+      color: var(--black);
+      border-color: var(--amber);
+    }
+    /* Phone 2 — timer */
+    .phone-2-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--amber);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .timer-circle-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .timer-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid rgba(160,104,64,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: conic-gradient(var(--amber) 0deg, var(--amber) 165deg, rgba(160,104,64,0.1) 165deg);
+    }
+    .timer-inner {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-time {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--cream);
+    }
+    .timer-step {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--amber);
+      text-align: center;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .timer-note {
+      font-size: 10px;
+      color: rgba(242,232,217,0.5);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .timer-bar-row {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .timer-bar {
+      height: 4px;
+      border-radius: 2px;
+      flex: 1;
+    }
+    .timer-bar.done { background: var(--amber); }
+    .timer-bar.active { background: rgba(160,104,64,0.4); }
+    .timer-bar.next  { background: rgba(160,104,64,0.15); }
+    .timer-vol {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      color: rgba(242,232,217,0.45);
+      text-align: center;
+    }
+    /* Phone 3 — diagnóstico */
+    .diag-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .diag-q {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .symptom-chip {
+      background: rgba(160,104,64,0.12);
+      border: 1px solid rgba(160,104,64,0.25);
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .symptom-chip.selected {
+      background: var(--amber);
+      color: var(--black);
+      border-color: var(--amber);
+    }
+    .diag-result {
+      background: var(--surface);
+      border: 1px solid var(--amber);
+      border-radius: 6px;
+      padding: 8px;
+      margin-top: 8px;
+    }
+    .diag-result-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .diag-result-body {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--cream);
+      text-transform: uppercase;
+    }
+    .phone-caption {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(242,232,217,0.5);
+      text-align: center;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 4 — FEATURES (light)
+    ────────────────────────────────────────── */
+    #features { background: var(--cream); color: var(--black); }
+    #features .tag { border-color: var(--primary); color: var(--primary); }
+    .features-header { margin-bottom: 56px; }
+    .features-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(34px, 5vw, 60px);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    @media (max-width: 720px) { .features-grid { grid-template-columns: 1fr; } }
+    @media (min-width: 721px) and (max-width: 960px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .feat-card {
+      padding: 36px 28px;
+    }
+    .feat-card.dark-card { background: var(--black); color: var(--cream); }
+    .feat-card.light-card { background: #fff; color: var(--black); }
+
+    .feat-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .feat-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+    .feat-card.dark-card .feat-title { color: var(--amber); }
+    .feat-card.light-card .feat-title { color: var(--primary); }
+    .feat-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.65;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 5 — FONTES (dark)
+    ────────────────────────────────────────── */
+    #fontes { background: var(--black); }
+    .fontes-header { text-align: center; margin-bottom: 16px; }
+    .fontes-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(34px, 5vw, 60px);
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .fontes-sub {
+      font-size: 16px;
+      color: rgba(242,232,217,0.55);
+      max-width: 520px;
+      margin: 0 auto 56px;
+      line-height: 1.6;
+    }
+    .fontes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin-bottom: 56px;
+    }
+    @media (max-width: 600px) { .fontes-grid { grid-template-columns: 1fr; } }
+    .fonte-card {
+      background: var(--surface);
+      border: 1px solid rgba(160,104,64,0.1);
+      padding: 36px 32px;
+    }
+    .fonte-card:hover { border-color: rgba(160,104,64,0.35); }
+    .fonte-abbr {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 42px;
+      color: var(--amber);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .fonte-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(242,232,217,0.5);
+      margin-bottom: 14px;
+    }
+    .fonte-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(242,232,217,0.65);
+      font-style: italic;
+    }
+    .fontes-note {
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: clamp(14px, 2.5vw, 18px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(160,104,64,0.25);
+      padding: 24px 32px;
+      border-radius: 2px;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* ──────────────────────────────────────────
+       SECTION 6 — CTA FINAL (dark)
+    ────────────────────────────────────────── */
+    #cta {
+      background: var(--surface);
+      text-align: center;
+      padding-bottom: 0;
+    }
+    .cta-logo-wrap { margin-bottom: 28px; }
+    .cta-tag { margin-bottom: 24px; }
+    .cta-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(44px, 8vw, 96px);
+      text-transform: uppercase;
+      line-height: 0.92;
+      margin-bottom: 20px;
+    }
+    .cta-sub {
+      font-size: 16px;
+      color: rgba(242,232,217,0.55);
+      max-width: 440px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .cta-url {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.1em;
+      color: rgba(160,104,64,0.5);
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+    .cta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 80px;
+    }
+    footer {
+      border-top: 1px solid rgba(160,104,64,0.1);
+      padding: 28px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.1em;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(242,232,217,0.3);
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── SVG LOGO ── */
+    .logo-svg { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 1 — HERO
+══════════════════════════════════════════════════════ -->
+<section id="hero">
+  <nav>
+    <a href="https://kronapp.vercel.app" class="nav-logo">
+      <!-- Espiral SVG pequena -->
+      <svg class="logo-svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14.5" stroke="#A06840" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="9.5"  stroke="#7A4F2E" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="4.5"  stroke="#A06840" stroke-width="1.5"/>
+        <circle cx="16" cy="16" r="2"    fill="#A06840"/>
+        <path d="M16 1.5 C 24 1.5 30.5 8 30.5 16" stroke="#A06840" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M16 6.5 C 22 6.5 25.5 11 25.5 16" stroke="#7A4F2E" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M16 11.5 C 19 11.5 20.5 13.5 20.5 16" stroke="#A06840" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="nav-logo-text">KOFFIE</span>
+    </a>
+    <a href="https://kronapp.vercel.app" class="nav-link">ABRIR O APP →</a>
+  </nav>
+
+  <div class="hero-body">
+    <!-- Logo grande -->
+    <div class="hero-logo-wrap reveal">
+      <svg class="logo-svg" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Espiral exterior -->
+        <circle cx="60" cy="60" r="57" stroke="#A06840" stroke-width="1.5" opacity="0.35"/>
+        <circle cx="60" cy="60" r="46" stroke="#7A4F2E" stroke-width="1.5" opacity="0.45"/>
+        <circle cx="60" cy="60" r="35" stroke="#A06840" stroke-width="2"   opacity="0.55"/>
+        <circle cx="60" cy="60" r="24" stroke="#7A4F2E" stroke-width="2"   opacity="0.7"/>
+        <circle cx="60" cy="60" r="13" stroke="#A06840" stroke-width="2.5" opacity="0.85"/>
+        <circle cx="60" cy="60" r="5"  fill="#A06840"/>
+        <!-- Arcos espirais -->
+        <path d="M60 3 C 95 3 117 28 117 60" stroke="#A06840" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <path d="M60 14 C 89 14 106 34 106 60" stroke="#7A4F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.65"/>
+        <path d="M60 25 C 83 25 95 40 95 60"  stroke="#A06840" stroke-width="2"   stroke-linecap="round" fill="none" opacity="0.7"/>
+        <path d="M60 36 C 77 36 84 46 84 60"  stroke="#7A4F2E" stroke-width="2"   stroke-linecap="round" fill="none" opacity="0.75"/>
+        <path d="M60 47 C 71 47 73 52 73 60"  stroke="#A06840" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.85"/>
+      </svg>
+    </div>
+
+    <div class="tag hero-tag reveal reveal-delay-1">ASSISTENTE DE EXTRAÇÃO PROFISSIONAL</div>
+
+    <h1 class="hero-title reveal reveal-delay-2">
+      CADA DESPEJO.<br>
+      <span class="amber">CADA DETALHE.</span>
+    </h1>
+
+    <p class="hero-sub reveal reveal-delay-3">
+      Transforma objetivos sensoriais em extrações precisas e reproduzíveis.
+    </p>
+
+    <a href="https://kronapp.vercel.app" class="btn-primary reveal reveal-delay-4">
+      ↓ INSTALAR GRATUITAMENTE
+    </a>
+
+    <div class="hero-badges reveal reveal-delay-5">
+      <span class="badge">GRATUITO</span>
+      <span class="badge">100% OFFLINE</span>
+      <span class="badge">SEM CADASTRO</span>
+      <span class="badge">PT</span>
+      <span class="badge">ES</span>
+      <span class="badge">EN</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 2 — PROBLEMA VS SOLUÇÃO
+══════════════════════════════════════════════════════ -->
+<section id="problema">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">O PROBLEMA</div>
+      <h2 class="problema-title">BARISTAS MERECEM<br>FERRAMENTAS MELHORES</h2>
+    </div>
+
+    <div class="vs-grid reveal">
+      <!-- Esquerda: problema -->
+      <div class="vs-col vs-col-bad">
+        <div class="vs-col-header">❌ O QUE USAM HOJE</div>
+
+        <div class="vs-item">
+          <span class="vs-icon">📝</span>
+          <div>
+            <div class="vs-item-title">Planilhas manuais</div>
+            <div class="vs-item-desc">Anotações dispersas em papel ou Excel sem padronização nem reprodutibilidade.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">🔢</span>
+          <div>
+            <div class="vs-item-title">Cálculos na cabeça</div>
+            <div class="vs-item-desc">Proporções de café e água calculadas manualmente a cada preparo, sujeitas a erro.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">📱</span>
+          <div>
+            <div class="vs-item-title">Apps genéricos</div>
+            <div class="vs-item-desc">Timers simples sem contexto de extração ou orientação sensorial específica.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">🔍</span>
+          <div>
+            <div class="vs-item-title">Diagnóstico por tentativa</div>
+            <div class="vs-item-desc">Identificar sub ou sobreextração exige experiência que leva anos para desenvolver.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">🌐</span>
+          <div>
+            <div class="vs-item-title">Dependência de internet</div>
+            <div class="vs-item-desc">Referências e receitas só acessíveis online, travando o fluxo em cafés sem sinal.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direita: solução -->
+      <div class="vs-col vs-col-good">
+        <div class="vs-col-header">✓ O QUE O KOFFIE FAZ</div>
+
+        <div class="vs-item">
+          <span class="vs-icon">📋</span>
+          <div>
+            <div class="vs-item-title">Receitas salvas localmente</div>
+            <div class="vs-item-desc">Suas receitas ficam no dispositivo via IndexedDB. Sem login, sem nuvem obrigatória.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">⚖️</span>
+          <div>
+            <div class="vs-item-title">Ratio automático</div>
+            <div class="vs-item-desc">Volumes e proporções calculados instantaneamente para cada método e dose.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">⏱️</span>
+          <div>
+            <div class="vs-item-title">Timer guiado por método</div>
+            <div class="vs-item-desc">Cada despejo com volume, timing e instrução sensorial específicos para o método.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">🔬</span>
+          <div>
+            <div class="vs-item-title">Diagnóstico inteligente</div>
+            <div class="vs-item-desc">12 combinações sintoma × método identificam a causa e sugerem o ajuste certo.</div>
+          </div>
+        </div>
+        <div class="vs-item">
+          <span class="vs-icon">✈️</span>
+          <div>
+            <div class="vs-item-title">100% offline</div>
+            <div class="vs-item-desc">PWA instalável que funciona sem internet. Avião, porão de café, onde for.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="stat-num">11</div>
+        <div class="stat-label">Métodos de preparo</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Idiomas suportados</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Fontes de referência</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 3 — SCREENSHOTS
+══════════════════════════════════════════════════════ -->
+<section id="screenshots">
+  <div class="container">
+    <div class="screens-header reveal">
+      <div class="tag">O APP EM AÇÃO</div>
+      <h2 class="screens-title">TRÊS TELAS. UM FLUXO COMPLETO.</h2>
+    </div>
+
+    <div class="phones-row">
+
+      <!-- PHONE 1: Seleção de método -->
+      <div class="phone-wrap reveal">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-1-header">☕ Koffie</div>
+            <div class="phone-1-q">O QUE VAMOS<br>PREPARAR?</div>
+            <div class="method-grid">
+              <div class="method-chip active">V60</div>
+              <div class="method-chip">Chemex</div>
+              <div class="method-chip">Espresso</div>
+              <div class="method-chip">Aeropress</div>
+              <div class="method-chip">French Press</div>
+              <div class="method-chip">Kalita</div>
+              <div class="method-chip">Moka</div>
+              <div class="method-chip">Clever</div>
+              <div class="method-chip">Sifão</div>
+              <div class="method-chip">Prensa</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Escolha do método</div>
+      </div>
+
+      <!-- PHONE 2: Timer -->
+      <div class="phone-wrap reveal reveal-delay-2">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-2-label">V60 · 15g · 250ml</div>
+            <div class="timer-circle-wrap">
+              <div class="timer-circle">
+                <div class="timer-inner">
+                  <span class="timer-time">01:45</span>
+                </div>
+              </div>
+            </div>
+            <div class="timer-step">1º DESPEJO</div>
+            <div class="timer-note">até 180ml no total</div>
+            <div class="timer-bar-row">
+              <div class="timer-bar done"></div>
+              <div class="timer-bar active"></div>
+              <div class="timer-bar next"></div>
+              <div class="timer-bar next"></div>
+            </div>
+            <div class="timer-vol" style="margin-top:8px">Bloom 30ml · Despejo 1 · Despejo 2 · Final</div>
+            <div style="margin-top:16px; font-family:'Barlow Condensed',sans-serif; font-size:10px; color:rgba(160,104,64,0.6); text-align:center; text-transform:uppercase; letter-spacing:0.1em">Agite levemente o filtro</div>
+          </div>
+        </div>
+        <div class="phone-caption">Timer com despachos</div>
+      </div>
+
+      <!-- PHONE 3: Diagnóstico -->
+      <div class="phone-wrap reveal reveal-delay-3">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="diag-label">Diagnóstico</div>
+            <div class="diag-q">QUAL O SABOR<br>PREDOMINANTE?</div>
+            <span class="symptom-chip selected">Amargo intenso</span>
+            <span class="symptom-chip">Azedo/ácido</span>
+            <span class="symptom-chip">Aguado / sem corpo</span>
+            <span class="symptom-chip">Terroso / cinzento</span>
+            <span class="symptom-chip">Muito doce / enjoativo</span>
+            <div class="diag-result">
+              <div class="diag-result-title">Diagnóstico · V60</div>
+              <div class="diag-result-body">CAUSA:<br>SOBREEXTRAÇÃO</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Diagnóstico de extração</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 4 — FEATURES
+══════════════════════════════════════════════════════ -->
+<section id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="tag">FUNCIONALIDADES</div>
+      <h2 class="features-title">TUDO QUE UM<br>BARISTA PRECISA</h2>
+    </div>
+
+    <div class="features-grid">
+      <!-- 1 dark -->
+      <div class="feat-card dark-card reveal">
+        <span class="feat-icon">⏱️</span>
+        <div class="feat-title">Timer guiado por método</div>
+        <p class="feat-desc">Cada método tem seu próprio fluxo de despejos com volumes proporcionais calculados automaticamente para a sua dose.</p>
+      </div>
+      <!-- 2 light -->
+      <div class="feat-card light-card reveal reveal-delay-1">
+        <span class="feat-icon">🎯</span>
+        <div class="feat-title">Perfis sensoriais</div>
+        <p class="feat-desc">Ajuste Clareza, Doçura, Corpo e Acidez antes de extrair. O app traduz seus objetivos em parâmetros técnicos precisos.</p>
+      </div>
+      <!-- 3 dark -->
+      <div class="feat-card dark-card reveal reveal-delay-2">
+        <span class="feat-icon">💾</span>
+        <div class="feat-title">Receitas locais</div>
+        <p class="feat-desc">Salve e acesse suas receitas sem login e sem nuvem. Tudo armazenado no IndexedDB do próprio dispositivo.</p>
+      </div>
+      <!-- 4 light -->
+      <div class="feat-card light-card reveal">
+        <span class="feat-icon">🔬</span>
+        <div class="feat-title">Diagnóstico de extração</div>
+        <p class="feat-desc">12 combinações de sintoma × método identificam se é sub ou sobreextração e sugerem o ajuste exato para corrigir.</p>
+      </div>
+      <!-- 5 dark -->
+      <div class="feat-card dark-card reveal reveal-delay-1">
+        <span class="feat-icon">⚖️</span>
+        <div class="feat-title">Ratio ajustável</div>
+        <p class="feat-desc">Flexibilidade profissional para ajustar a proporção café:água em tempo real e recalcular todos os volumes automaticamente.</p>
+      </div>
+      <!-- 6 light -->
+      <div class="feat-card light-card reveal reveal-delay-2">
+        <span class="feat-icon">🌍</span>
+        <div class="feat-title">3 idiomas</div>
+        <p class="feat-desc">Interface completa em Português, Español e English. Troque o idioma a qualquer momento nas configurações.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 5 — FONTES
+══════════════════════════════════════════════════════ -->
+<section id="fontes">
+  <div class="container">
+    <div class="fontes-header reveal">
+      <div class="tag">CREDIBILIDADE TÉCNICA</div>
+      <h2 class="fontes-title">NÃO INVENTAMOS<br>OS PARÂMETROS</h2>
+      <p class="fontes-sub">
+        Cada receita, cada ratio, cada timing foi derivado de padrões publicados por organizações de referência mundial em café especial.
+      </p>
+    </div>
+
+    <div class="fontes-grid">
+      <div class="fonte-card reveal">
+        <div class="fonte-abbr">SCA</div>
+        <div class="fonte-name">Specialty Coffee Association</div>
+        <div class="fonte-desc">"Golden Cup Standard" — parâmetros de extração e concentração para filtrado. Referência primária para métodos por infusão e gotejamento.</div>
+      </div>
+      <div class="fonte-card reveal reveal-delay-1">
+        <div class="fonte-abbr">BSCA</div>
+        <div class="fonte-name">Brazilian Specialty Coffee Association</div>
+        <div class="fonte-desc">Adaptações regionais para métodos filtrados e imersão com foco no perfil sensorial de cafés brasileiros especiais.</div>
+      </div>
+      <div class="fonte-card reveal reveal-delay-2">
+        <div class="fonte-abbr">WBC</div>
+        <div class="fonte-name">World Barista Championship</div>
+        <div class="fonte-desc">Padrões de extração de espresso e protocolos de competição. Referência para parâmetros de pressão, temperatura e tempo.</div>
+      </div>
+      <div class="fonte-card reveal reveal-delay-3">
+        <div class="fonte-abbr">HOFFMANN</div>
+        <div class="fonte-name">James Hoffmann</div>
+        <div class="fonte-desc">Protocolo V60 para clareza — bloom de 12% do peso total, agitação controlada e distribuição uniforme da extração.</div>
+      </div>
+    </div>
+
+    <div class="fontes-note reveal">
+      A FONTE É AUTOMÁTICA.<br>O KOFFIE ESCOLHE A REFERÊNCIA CERTA PARA CADA MÉTODO.
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 6 — CTA FINAL
+══════════════════════════════════════════════════════ -->
+<section id="cta">
+  <div class="container">
+    <!-- Logo grande -->
+    <div class="cta-logo-wrap reveal">
+      <svg class="logo-svg" style="margin: 0 auto" width="96" height="96" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="57" stroke="#A06840" stroke-width="1.5" opacity="0.3"/>
+        <circle cx="60" cy="60" r="46" stroke="#7A4F2E" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="60" cy="60" r="35" stroke="#A06840" stroke-width="2"   opacity="0.5"/>
+        <circle cx="60" cy="60" r="24" stroke="#7A4F2E" stroke-width="2"   opacity="0.65"/>
+        <circle cx="60" cy="60" r="13" stroke="#A06840" stroke-width="2.5" opacity="0.8"/>
+        <circle cx="60" cy="60" r="5"  fill="#A06840"/>
+        <path d="M60 3 C 95 3 117 28 117 60" stroke="#A06840" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.55"/>
+        <path d="M60 14 C 89 14 106 34 106 60" stroke="#7A4F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <path d="M60 25 C 83 25 95 40 95 60"  stroke="#A06840" stroke-width="2"   stroke-linecap="round" fill="none" opacity="0.65"/>
+        <path d="M60 36 C 77 36 84 46 84 60"  stroke="#7A4F2E" stroke-width="2"   stroke-linecap="round" fill="none" opacity="0.72"/>
+        <path d="M60 47 C 71 47 73 52 73 60"  stroke="#A06840" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.85"/>
+      </svg>
+    </div>
+
+    <div class="tag cta-tag reveal reveal-delay-1">KOFFIE · ASSISTENTE DE EXTRAÇÃO</div>
+
+    <h2 class="cta-title reveal reveal-delay-2">PRONTO PARA<br>EXTRAIR MELHOR?</h2>
+
+    <p class="cta-sub reveal reveal-delay-3">
+      Gratuito, offline, sem cadastro.<br>
+      Instale agora e transforme cada preparo em precisão.
+    </p>
+
+    <div class="reveal reveal-delay-4" style="margin-bottom: 20px">
+      <a href="https://kronapp.vercel.app" class="btn-primary" style="display:inline-flex">
+        ↓ INSTALAR O KOFFIE
+      </a>
+    </div>
+
+    <div class="cta-url reveal reveal-delay-5">USEKOFFIE.APP</div>
+
+    <div class="cta-badges reveal">
+      <span class="badge">GRATUITO</span>
+      <span class="badge">OFFLINE</span>
+      <span class="badge">SEM CADASTRO</span>
+      <span class="badge">PWA</span>
+      <span class="badge">PT</span>
+      <span class="badge">ES</span>
+      <span class="badge">EN</span>
+      <span class="badge">SCA</span>
+      <span class="badge">BSCA</span>
+      <span class="badge">WBC</span>
+      <span class="badge">HOFFMANN</span>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14.5" stroke="#A06840" stroke-width="1.2" opacity="0.6"/>
+        <circle cx="16" cy="16" r="9.5"  stroke="#7A4F2E" stroke-width="1.2" opacity="0.7"/>
+        <circle cx="16" cy="16" r="4.5"  stroke="#A06840" stroke-width="1.5" opacity="0.8"/>
+        <circle cx="16" cy="16" r="2"    fill="#A06840"/>
+      </svg>
+      <span class="footer-text">KOFFIE</span>
+    </div>
+    <span class="footer-copy">© 2026 KOFFIE — TODOS OS DIREITOS RESERVADOS</span>
+  </footer>
+</section>
+
+
+<script>
+  // Intersection Observer para fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
