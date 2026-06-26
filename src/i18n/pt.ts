@@ -6,10 +6,19 @@ export const pt = {
     diagnosis: 'Diagnóstico',
     settings: 'Ajustes',
   },
+  // Splash
+  splash: {
+    phrases: [
+      'O café começa antes da primeira gota',
+      'Extração é intenção',
+      'Cada despejo tem um propósito',
+      'O tempo também é um ingrediente',
+    ] as string[],
+  },
   // Brew
   brew: {
     title: 'Preparar Café',
-    selectMethod: 'Escolha o Método',
+    selectMethod: 'Escolha o método',
     selectProfile: 'Perfil Sensorial',
     calculator: 'Calculadora',
     byWater: 'Por Água',
@@ -46,10 +55,22 @@ export const pt = {
     step: 'Etapa',
     of: 'de',
     addWater: 'Adicionar',
+    pourTo: 'Completar até',
     ml: 'ml',
     g: 'g',
     checklist: 'Checklist',
     checkAll: 'Marcar todos',
+    startBrew: 'Iniciar',
+    totalTime: 'Tempo total',
+    brewDone: 'Preparação concluída',
+    howWasIt: 'Como ficou?',
+    newBrew: 'Novo Preparo',
+    donePhrases: [
+      'Agora é hora de provar',
+      'O resultado está na xícara',
+      'Confie na extração',
+      'Cada preparo ensina algo',
+    ] as string[],
   },
   // Diagnosis
   diagnosis: {
@@ -65,19 +86,23 @@ export const pt = {
     symptoms: {
       acid: 'Ácido',
       bitter: 'Amargo',
-      weak: 'Fraco',
-      strong: 'Forte demais',
+      weak: 'Débil',
       perfect: 'Perfeito',
     },
     causes: {
       underExtraction: 'Subextração',
       overExtraction: 'Sobreextração',
-      lowDose: 'Dose baixa / Subextração',
-      highDose: 'Dose alta demais',
+      ratioImbalance: 'Ratio desequilibrado',
+      clearUnder: 'Subextração clara',
+      bitterRatio: 'Ratio + sobreextração parcial',
+      irregular: 'Extração irregular',
       perfect: 'Extração ideal',
     },
     save: 'Salvar Receita',
     repeat: 'Preparar Novamente',
+    viewDiagnosis: 'Ver diagnóstico',
+    saveExtraction: 'Guardar extração',
+    confirm: 'Confirmar',
   },
   // Recipes
   recipes: {

@@ -15,6 +15,7 @@ export function MethodSelect() {
 
   const [now, setNow] = useState(new Date())
   const [lastRecipe, setLastRecipe] = useState<SavedRecipe | null>(null)
+  const [activeId, setActiveId] = useState<string | null>(null)
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000)
@@ -26,8 +27,9 @@ export function MethodSelect() {
   }, [])
 
   const handleSelect = (id: string) => {
+    setActiveId(id)
     setMethod(id as any)
-    navigate(`/brew/profile/${id}`)
+    setTimeout(() => navigate(`/brew/profile/${id}`), 150)
   }
 
   const handleRepeat = () => {
@@ -52,10 +54,10 @@ export function MethodSelect() {
         {/* ── Hero ── */}
         <div
           style={{
-            paddingTop: 'calc(env(safe-area-inset-top) + 28px)',
+            paddingTop: 'calc(env(safe-area-inset-top) + 24px)',
             paddingLeft: 20,
             paddingRight: 20,
-            paddingBottom: 20,
+            paddingBottom: 12,
             background: 'linear-gradient(180deg, var(--kron-surface) 0%, var(--kron-black) 100%)',
           }}
         >
@@ -68,21 +70,22 @@ export function MethodSelect() {
           }}>
             {hh}:{mm}
           </div>
-          <h1 style={{
-            fontFamily: 'var(--font-title)',
-            fontSize: 30,
-            lineHeight: 1.1,
+          <p style={{
+            fontFamily: 'var(--font-main)',
+            fontSize: 13,
+            lineHeight: 1.3,
             color: 'var(--kron-cream)',
-            margin: '6px 0 0',
+            margin: '4px 0 0',
+            opacity: 0.55,
             letterSpacing: '0.04em',
           }}>
-            O QUE VAMOS<br />PREPARAR?
-          </h1>
+            {t.brew.selectMethod}
+          </p>
 
           {lastRecipe && (
             <div
               style={{
-                marginTop: 16,
+                marginTop: 14,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -145,72 +148,72 @@ export function MethodSelect() {
           )}
         </div>
 
-        {/* ── Section label ── */}
-        <div style={{ padding: '20px 20px 10px' }}>
-          <p style={{
-            fontFamily: 'var(--font-main)',
-            fontSize: 10,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'var(--kron-amber)',
-            opacity: 0.55,
-            margin: 0,
-          }}>
-            {t.brew.selectMethod}
-          </p>
-        </div>
-
         {/* ── Method grid ── */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 12,
-            padding: '0 16px',
+            gap: 10,
+            padding: '8px 16px',
             paddingBottom: 'calc(80px + env(safe-area-inset-bottom))',
           }}
         >
-          {METHODS.map(m => (
-            <button
-              key={m.id}
-              onClick={() => handleSelect(m.id)}
-              className="active:scale-95 transition-transform text-left"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: 16,
-                borderRadius: 18,
-                background: 'var(--kron-surface)',
-                border: '1px solid rgba(160,104,64,0.15)',
-                cursor: 'pointer',
-              }}
-            >
-              <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                <MethodIcon id={m.id} />
-              </div>
-              <span style={{
-                fontFamily: 'var(--font-title)',
-                fontSize: 19,
-                color: 'var(--kron-cream)',
-                lineHeight: 1.1,
-                letterSpacing: '0.02em',
-                display: 'block',
-              }}>
-                {t.methods[m.id as keyof typeof t.methods] ?? m.name}
-              </span>
-              <span style={{
-                fontSize: 11,
-                color: 'var(--kron-amber)',
-                opacity: 0.6,
-                marginTop: 4,
-                lineHeight: 1.35,
-                display: 'block',
-              }}>
-                {m.description}
-              </span>
-            </button>
-          ))}
+          {METHODS.map(m => {
+            const isActive = activeId === m.id
+            return (
+              <button
+                key={m.id}
+                onClick={() => handleSelect(m.id)}
+                className="text-left"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  padding: 16,
+                  borderRadius: 18,
+                  background: isActive ? '#1A1208' : 'var(--kron-surface)',
+                  border: isActive
+                    ? '1px solid #A06840'
+                    : '1px solid rgba(160,104,64,0.15)',
+                  cursor: 'pointer',
+                  transition: 'border-color 150ms ease, background 150ms ease',
+                }}
+              >
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 10,
+                  opacity: isActive ? 1 : 0.75,
+                  transition: 'opacity 150ms ease',
+                }}>
+                  <MethodIcon id={m.id} />
+                </div>
+                <span style={{
+                  fontFamily: 'var(--font-title)',
+                  fontSize: 19,
+                  color: 'var(--kron-cream)',
+                  lineHeight: 1.1,
+                  letterSpacing: '0.02em',
+                  display: 'block',
+                }}>
+                  {t.methods[m.id as keyof typeof t.methods] ?? m.name}
+                </span>
+                <span style={{
+                  fontSize: 11,
+                  color: 'var(--kron-amber)',
+                  opacity: 0.6,
+                  marginTop: 4,
+                  lineHeight: 1.35,
+                  display: 'block',
+                }}>
+                  {m.description}
+                </span>
+              </button>
+            )
+          })}
         </div>
 
       </div>
@@ -233,7 +236,6 @@ function MethodIcon({ id }: { id: string }) {
 
   switch (id) {
     case 'v60':
-      // Wide inverted cone — very distinctive triangle
       return (
         <svg {...base}>
           <path d="M3 4H21L12 22Z" />
@@ -241,7 +243,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'melitta':
-      // Trapezoid with three drip holes
       return (
         <svg {...base}>
           <path d="M5 4H19L16 19H8Z" />
@@ -249,7 +250,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'chemex':
-      // Hourglass — two triangles meeting at waist
       return (
         <svg {...base}>
           <path d="M4 4H20L12 12L4 4Z" />
@@ -257,14 +257,12 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'kalita':
-      // Flat funnel with wavy bottom edge
       return (
         <svg {...base}>
           <path d="M5 4H19L17 14C15.5 17 14 15.5 12 17C10 15.5 8.5 17 7 14Z" />
         </svg>
       )
     case 'colador':
-      // Rounded cloth bag / pouch
       return (
         <svg {...base}>
           <path d="M9 3C9 3 4 5.5 4 12C4 17 7.5 21 12 21C16.5 21 20 17 20 12C20 5.5 15 3 15 3L12 2Z" />
@@ -272,7 +270,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'prensa':
-      // French press — rectangle with piston
       return (
         <svg {...base}>
           <rect x="7" y="7" width="10" height="13" rx="1" />
@@ -281,7 +278,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'clever':
-      // Square body with valve dots at bottom
       return (
         <svg {...base}>
           <rect x="5" y="4" width="14" height="14" rx="2" />
@@ -292,7 +288,6 @@ function MethodIcon({ id }: { id: string }) {
     case 'cold_brew':
       return <span style={{ fontSize: 30, lineHeight: 1, display: 'block' }}>❄</span>
     case 'espresso':
-      // Portafilter — ellipse top + handle + extraction dots
       return (
         <svg {...base}>
           <ellipse cx="12" cy="9" rx="7" ry="5" />
@@ -303,7 +298,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'moka':
-      // Octagonal moka pot body with waist line
       return (
         <svg {...base}>
           <path d="M9 3H15L20 8V15L15 21H9L4 15V8Z" />
@@ -311,7 +305,6 @@ function MethodIcon({ id }: { id: string }) {
         </svg>
       )
     case 'aeropress':
-      // Cylinder with plunger cap
       return (
         <svg {...base}>
           <rect x="8" y="7" width="8" height="13" rx="2" />
