@@ -59,11 +59,11 @@ export const es = {
     immersion: 'Inmersión',
     pressure: 'Presión',
     symptoms: {
-      acid: 'Ácido / Agrio',
+      acid: 'Ácido',
       bitter: 'Amargo',
-      weak: 'Débil / Aguado',
+      weak: 'Débil',
       strong: 'Muy fuerte',
-      perfect: '¡Perfecto!',
+      perfect: 'Perfecto',
     },
     causes: {
       underExtraction: 'Subextracción',
