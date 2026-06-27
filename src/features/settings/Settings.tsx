@@ -15,8 +15,8 @@ const LANGUAGES: { id: Language; label: string; flag: string }[] = [
 
 export function Settings() {
   const {
-    language, defaultWater, vibration, sound,
-    setLanguage, setDefaultWater, setVibration, setSound,
+    language, vibration, sound,
+    setLanguage, setVibration, setSound,
   } = useSettingsStore()
   const t = getTranslations(language)
   const [showClearModal, setShowClearModal] = useState(false)
@@ -69,43 +69,6 @@ export function Settings() {
                 </span>
               </button>
             ))}
-          </div>
-        </Section>
-
-        {/* Default water */}
-        <Section label={t.settings.defaultWater}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <input
-              type="range"
-              min={100}
-              max={1000}
-              step={10}
-              value={defaultWater}
-              onChange={e => setDefaultWater(Number(e.target.value))}
-              className="flex-1 h-1 rounded-full appearance-none outline-none"
-              style={{ accentColor: 'var(--kron-amber)' }}
-            />
-            <span style={{
-              fontFamily: 'var(--font-title)',
-              fontSize: 22,
-              color: 'var(--kron-cream)',
-              minWidth: 64,
-              textAlign: 'right',
-            }}>
-              {defaultWater}ml
-            </span>
-          </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: 6,
-            fontSize: 10,
-            color: 'var(--kron-amber)',
-            opacity: 0.4,
-            fontFamily: 'var(--font-main)',
-          }}>
-            <span>100ml</span>
-            <span>1000ml</span>
           </div>
         </Section>
 

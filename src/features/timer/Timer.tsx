@@ -59,13 +59,18 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
 }) {
   const steps: TimerStep[] = profile.steps
 
-  // Phase: 'setup' = pre-start editor; 'timer' = active brewing
-  const [phase, setPhase] = useState<'setup' | 'timer'>('setup')
+  // Scale only the final drain (wait) step proportionally to water volume.
+  // Bloom and inter-attack waits stay fixed — they depend on grind, not volume.
+  const scaledDurations = useMemo<number[]>(() => {
+    return steps.map((step, i) => {
+      const isLast = i === steps.length - 1
+      if (isLast && step.action === 'wait' && profile.base_water_ml) {
+        return Math.max(5, Math.round(step.duration * (waterMl / profile.base_water_ml)))
+      }
+      return step.duration
+    })
+  }, [steps, waterMl, profile])
 
-  // Editable step durations (initialized from profile)
-  const [stepDurations, setStepDurations] = useState<number[]>(() => steps.map(s => s.duration))
-
-  // Timer state
   const [stepIdx, setStepIdx] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [running, setRunning] = useState(false)
@@ -78,18 +83,16 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const currentDuration = stepDurations[stepIdx]
+  const currentDuration = scaledDurations[stepIdx]
   const currentStep = steps[stepIdx]
   const isPour = currentStep.action === 'pour'
 
-  // Start the continuous stopwatch once
   const startContinuousTimer = useCallback(() => {
     if (brewStartedRef.current) return
     brewStartedRef.current = true
     totalTimerRef.current = setInterval(() => setTotalElapsed(e => e + 1), 1000)
   }, [])
 
-  // Tick the per-step timer
   const tick = useCallback(() => {
     setElapsed(e => {
       const next = e + 1
@@ -101,7 +104,6 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
     })
   }, [currentDuration, vibration])
 
-  // Start/stop per-step interval
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(tick, 1000)
@@ -111,7 +113,6 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [running, tick])
 
-  // Auto-advance when step finishes
   useEffect(() => {
     if (!running || elapsed < currentDuration) return
     const id = setTimeout(() => {
@@ -123,13 +124,11 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
       } else {
         setStepIdx(i => i + 1)
         setElapsed(0)
-        // running stays true — next step starts automatically via tick effect
       }
     }, 500)
     return () => clearTimeout(id)
   }, [elapsed, running, currentDuration, stepIdx, steps.length])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
@@ -171,142 +170,12 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
     setRunning(false)
     setDone(false)
     setTotalElapsed(0)
-    setPhase('setup')
-    setStepDurations(steps.map(s => s.duration))
-  }
-
-  const adjustDuration = (idx: number, delta: number) => {
-    setStepDurations(prev => {
-      const next = [...prev]
-      next[idx] = Math.max(5, next[idx] + delta)
-      return next
-    })
   }
 
   if (done) {
     return <DoneScreen t={t} navigate={navigate} coffeeG={coffeeG} waterMl={waterMl} totalElapsed={totalElapsed} />
   }
 
-  // ── Setup phase ──
-  if (phase === 'setup') {
-    return (
-      <div className="flex flex-col h-full" style={{ background: 'var(--kron-black)' }}>
-        {/* Header */}
-        <div className="px-5 flex items-center justify-between"
-          style={{ paddingTop: `calc(env(safe-area-inset-top) + 16px)`, paddingBottom: 16 }}>
-          <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center rounded-xl"
-            style={{ background: 'rgba(160,104,64,0.1)' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--kron-amber)" strokeWidth="2.2" strokeLinecap="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <span className="text-sm uppercase tracking-widest" style={{ color: 'var(--kron-amber)', fontFamily: 'var(--font-main)' }}>
-            {profile.profile_name}
-          </span>
-          <div className="w-9" />
-        </div>
-
-        <div className="flex-1 page-scroll px-5 pt-2">
-          <p style={{
-            fontSize: 10,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'var(--kron-amber)',
-            opacity: 0.55,
-            marginBottom: 16,
-            fontFamily: 'var(--font-main)',
-          }}>
-            {coffeeG}g · {waterMl}ml
-          </p>
-
-          <div className="flex flex-col gap-2 mb-6">
-            {steps.map((step, i) => {
-              const isPourStep = step.action === 'pour'
-              const label = getStepLabel(step.label, t)
-              const waterAmt = step.water_cumulative_percent != null
-                ? Math.round(waterMl * step.water_cumulative_percent)
-                : null
-              return (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '12px 14px',
-                  borderRadius: 14,
-                  background: 'var(--kron-surface)',
-                  border: '1px solid rgba(160,104,64,0.15)',
-                  gap: 12,
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <span style={{
-                      fontFamily: 'var(--font-title)',
-                      fontSize: 18,
-                      color: isPourStep ? 'var(--kron-cream)' : 'var(--kron-amber)',
-                      display: 'block',
-                      lineHeight: 1,
-                    }}>
-                      {label}
-                    </span>
-                    {waterAmt != null && isPourStep && (
-                      <span style={{ fontSize: 11, color: 'var(--kron-amber)', opacity: 0.65, marginTop: 2, display: 'block' }}>
-                        {t.timer.pourTo} {waterAmt}ml
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <button
-                      onClick={() => adjustDuration(i, -5)}
-                      style={{
-                        width: 30, height: 30, borderRadius: 8,
-                        background: 'rgba(160,104,64,0.12)',
-                        border: '1px solid rgba(160,104,64,0.2)',
-                        color: 'var(--kron-amber)',
-                        fontSize: 16, fontWeight: 700,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >−</button>
-                    <span style={{
-                      fontFamily: 'var(--font-main)',
-                      fontSize: 16,
-                      color: 'var(--kron-white)',
-                      minWidth: 36,
-                      textAlign: 'center',
-                    }}>
-                      {stepDurations[i]}s
-                    </span>
-                    <button
-                      onClick={() => adjustDuration(i, 5)}
-                      style={{
-                        width: 30, height: 30, borderRadius: 8,
-                        background: 'rgba(160,104,64,0.12)',
-                        border: '1px solid rgba(160,104,64,0.2)',
-                        color: 'var(--kron-amber)',
-                        fontSize: 16, fontWeight: 700,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >+</button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="px-5" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
-          <Button
-            variant="primary" size="lg" fullWidth
-            onClick={() => setPhase('timer')}
-            style={{ fontSize: 20, letterSpacing: '0.15em' }}
-          >
-            {t.timer.startBrew}
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  // ── Timer phase ──
   const progress = elapsed / currentDuration
   const waterForStep = currentStep.water_cumulative_percent != null
     ? Math.round(waterMl * currentStep.water_cumulative_percent)
@@ -329,7 +198,6 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
         <span className="text-sm uppercase tracking-widest" style={{ color: 'var(--kron-amber)', fontFamily: 'var(--font-main)' }}>
           {t.timer.step} {stepIdx + 1} {t.timer.of} {steps.length}
         </span>
-        {/* Total stopwatch */}
         <span style={{
           fontFamily: 'var(--font-main)',
           fontSize: 13,
@@ -378,7 +246,7 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
           </div>
         </div>
 
-        {/* Water volume */}
+        {/* Cumulative water target */}
         {waterForStep != null && isPour && (
           <div className="flex flex-col items-center mb-4">
             <span className="text-xs uppercase tracking-widest mb-1" style={{ color: 'var(--kron-amber)', opacity: 0.6 }}>
@@ -405,7 +273,6 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
 
       {/* Controls */}
       <div className="px-5" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
-        {/* Manual prev/next */}
         <div className="flex justify-between items-center mb-3">
           <button
             onClick={handleManualPrev}
@@ -685,7 +552,7 @@ function ChecklistTimer({ items, t, navigate, methodId }: { items: any[]; t: any
   )
 }
 
-// ─── Done Screen (result screen) ─────────────────────────────────────────────
+// ─── Done Screen ─────────────────────────────────────────────────────────────
 function DoneScreen({ t, navigate, coffeeG, waterMl, totalElapsed }: {
   t: any; navigate: any; coffeeG: number; waterMl: number; totalElapsed: number
 }) {
@@ -695,8 +562,7 @@ function DoneScreen({ t, navigate, coffeeG, waterMl, totalElapsed }: {
   }, [t])
 
   return (
-    <div className="flex flex-col h-full items-center justify-center px-6" style={{ background: '#0D0B08' }}>
-      {/* Label */}
+    <div className="flex flex-col h-full items-center justify-center px-6" style={{ background: 'var(--kron-black)' }}>
       <p style={{
         fontFamily: 'var(--font-main)',
         fontSize: 11,
@@ -709,7 +575,6 @@ function DoneScreen({ t, navigate, coffeeG, waterMl, totalElapsed }: {
         {t.timer.brewDone}
       </p>
 
-      {/* Hero time */}
       <div style={{
         fontFamily: 'var(--font-title)',
         fontSize: 80,
@@ -730,7 +595,6 @@ function DoneScreen({ t, navigate, coffeeG, waterMl, totalElapsed }: {
         {coffeeG}g · {waterMl}ml
       </p>
 
-      {/* Rotating phrase */}
       <p style={{
         fontFamily: 'Sansita',
         fontStyle: 'italic',
@@ -745,7 +609,6 @@ function DoneScreen({ t, navigate, coffeeG, waterMl, totalElapsed }: {
         {phrase}
       </p>
 
-      {/* Single CTA */}
       <div style={{ width: '100%' }}>
         <Button variant="primary" size="lg" fullWidth onClick={() => navigate('/diagnosis')}>
           {t.timer.howWasIt}

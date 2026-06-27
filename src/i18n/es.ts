@@ -131,7 +131,6 @@ export const es = {
     credits: 'Hecho con cariño para baristas.',
     clearData: 'Borrar datos',
     confirmClear: '¿Borrar todas las recetas guardadas?',
-    defaultWater: 'Agua por defecto (ml)',
     vibration: 'Vibración en el timer',
     sound: 'Sonido en el timer',
   },

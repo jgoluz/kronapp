@@ -131,7 +131,6 @@ export const en = {
     credits: 'Made with love for baristas.',
     clearData: 'Clear data',
     confirmClear: 'Delete all saved recipes?',
-    defaultWater: 'Default water (ml)',
     vibration: 'Timer vibration',
     sound: 'Timer sound',
   },

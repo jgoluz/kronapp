@@ -11,12 +11,12 @@ import { PageHeader } from '../../shared/components/PageHeader'
 export function NewRecipe() {
   const navigate = useNavigate()
   const { setMethod, setProfile, setWater } = useBrewStore()
-  const { language, defaultWater } = useSettingsStore()
+  const { language } = useSettingsStore()
   const t = getTranslations(language)
 
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null)
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null)
-  const [waterMl, setWaterMl] = useState(defaultWater)
+  const [waterMl, setWaterMl] = useState(300)
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -144,7 +144,7 @@ export function NewRecipe() {
           <FormSection label={`${t.brew.water} (ml)`}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <button
-                onClick={() => setWaterMl(v => Math.max(50, v - 10))}
+                onClick={() => setWaterMl((v: number) => Math.max(50, v - 10))}
                 style={{
                   width: 36, height: 36, borderRadius: 10, flexShrink: 0,
                   background: 'rgba(160,104,64,0.1)', border: '1px solid rgba(160,104,64,0.2)',
@@ -159,7 +159,7 @@ export function NewRecipe() {
                 style={{ accentColor: 'var(--kron-amber)' }}
               />
               <button
-                onClick={() => setWaterMl(v => Math.min(1000, v + 10))}
+                onClick={() => setWaterMl((v: number) => Math.min(1000, v + 10))}
                 style={{
                   width: 36, height: 36, borderRadius: 10, flexShrink: 0,
                   background: 'rgba(160,104,64,0.1)', border: '1px solid rgba(160,104,64,0.2)',

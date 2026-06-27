@@ -51,7 +51,7 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: '#0D0B08',
+        background: '#1A1409',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

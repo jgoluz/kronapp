@@ -138,7 +138,6 @@ export const pt = {
     credits: 'Feito com carinho para baristas.',
     clearData: 'Limpar dados',
     confirmClear: 'Apagar todas as receitas salvas?',
-    defaultWater: 'Água padrão (ml)',
     vibration: 'Vibração no timer',
     sound: 'Som no timer',
   },

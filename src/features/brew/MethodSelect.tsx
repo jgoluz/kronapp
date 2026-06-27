@@ -61,6 +61,19 @@ export function MethodSelect() {
             background: 'linear-gradient(180deg, var(--kron-surface) 0%, var(--kron-black) 100%)',
           }}
         >
+          <p style={{
+            fontFamily: 'Sansita',
+            fontStyle: 'italic',
+            fontWeight: 900,
+            fontSize: 18,
+            color: '#A06840',
+            textAlign: 'center',
+            margin: '0 0 6px',
+            lineHeight: 1,
+            letterSpacing: '0.01em',
+          }}>
+            Koffie
+          </p>
           <div style={{
             fontFamily: 'var(--font-title)',
             fontSize: 80,

@@ -25,6 +25,7 @@ export interface BrewProfile {
   source: Source
   steps: TimerStep[]
   notes?: string
+  base_water_ml?: number // reference water volume for proportional drain scaling
 }
 
 // Helper to build bloom+attacks steps
@@ -68,6 +69,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'hoffmann',
     steps: bloomAttacks(0.12, 45, 45, [30, 30], 60, 60),
+    base_water_ml: 300,
   },
   {
     id: 'v60_docura',
@@ -81,6 +83,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 50, 60),
+    base_water_ml: 300,
   },
   {
     id: 'v60_corpo',
@@ -94,6 +97,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 55, 60),
+    base_water_ml: 300,
   },
   // Melitta
   {
@@ -108,6 +112,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 50, 60),
+    base_water_ml: 300,
   },
   {
     id: 'melitta_corpo',
@@ -121,6 +126,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 55, 65),
+    base_water_ml: 300,
   },
   // Chemex
   {
@@ -135,6 +141,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'sca',
     steps: bloomAttacks(0.10, 45, 45, [30, 30, 30], 60, 90),
+    base_water_ml: 400,
   },
   {
     id: 'chemex_docura',
@@ -148,6 +155,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 45, 45, [25, 25, 25], 60, 90),
+    base_water_ml: 375,
   },
   // Kalita
   {
@@ -162,6 +170,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 50, 60),
+    base_water_ml: 300,
   },
   {
     id: 'kalita_docura',
@@ -175,6 +184,7 @@ export const BREW_PROFILES: BrewProfile[] = [
     timer_type: 'bloom_attacks',
     source: 'bsca',
     steps: bloomAttacks(0.10, 40, 40, [25, 25, 25], 55, 60),
+    base_water_ml: 300,
   },
   // Colador de Pano
   {
@@ -193,6 +203,7 @@ export const BREW_PROFILES: BrewProfile[] = [
       { label: 'wait', duration: 180, action: 'wait' },
     ],
     notes: 'Despejo único contínuo e lento',
+    base_water_ml: 300,
   },
   // Prensa Francesa
   {
@@ -246,6 +257,7 @@ export const BREW_PROFILES: BrewProfile[] = [
       { label: 'wait', duration: 180, action: 'wait' },
     ],
     notes: 'Abrir a válvula após 3 minutos de imersão',
+    base_water_ml: 250,
   },
   // Cold Brew
   {
