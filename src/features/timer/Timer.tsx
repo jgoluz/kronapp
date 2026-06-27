@@ -87,23 +87,27 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
   const currentStep = steps[stepIdx]
   const isPour = currentStep.action === 'pour'
 
+  // Always-current ref so tick doesn't need to capture currentDuration from closure.
+  // Without this, tick re-creates only when currentDuration changes; if two consecutive
+  // steps share the same duration the interval effect skips restarting and the timer freezes.
+  const currentDurationRef = useRef(currentDuration)
+  currentDurationRef.current = currentDuration
+
   const startContinuousTimer = useCallback(() => {
     if (brewStartedRef.current) return
     brewStartedRef.current = true
     totalTimerRef.current = setInterval(() => setTotalElapsed(e => e + 1), 1000)
   }, [])
 
+  // Stable tick — reads duration from ref, never recreated between steps.
   const tick = useCallback(() => {
     setElapsed(e => {
       const next = e + 1
-      if (next >= currentDuration) {
-        if (vibration && navigator.vibrate) navigator.vibrate(200)
-        return currentDuration
-      }
-      return next
+      return next >= currentDurationRef.current ? currentDurationRef.current : next
     })
-  }, [currentDuration, vibration])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Single interval that runs continuously while running; step changes don't restart it.
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(tick, 1000)
@@ -113,11 +117,15 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [running, tick])
 
+  // Auto-advance: vibrate once, then after 500 ms move to next step or finish.
+  // Does NOT clear the interval on advance — the running interval picks up elapsed=0
+  // on the next tick using the updated currentDurationRef.
   useEffect(() => {
     if (!running || elapsed < currentDuration) return
+    if (vibration && navigator.vibrate) navigator.vibrate(200)
     const id = setTimeout(() => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
       if (stepIdx + 1 >= steps.length) {
+        if (intervalRef.current) clearInterval(intervalRef.current)
         if (totalTimerRef.current) clearInterval(totalTimerRef.current)
         setRunning(false)
         setDone(true)
@@ -127,7 +135,7 @@ function BrewTimer({ profile, waterMl, coffeeG, t, navigate, vibration }: {
       }
     }, 500)
     return () => clearTimeout(id)
-  }, [elapsed, running, currentDuration, stepIdx, steps.length])
+  }, [elapsed, running, currentDuration, stepIdx, steps.length, vibration])
 
   useEffect(() => {
     return () => {
